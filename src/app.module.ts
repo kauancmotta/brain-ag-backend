@@ -6,6 +6,7 @@ import { EntitiesModule } from './entities/entities.module';
 import { AddressModule } from './address/address.module';
 import { CropsModule } from './crops/crops.module';
 import { CropSeasonsModule } from './crop_seasons/crop_seasons.module';
+import { CropSeasonCropsModule } from './crop_season_crops/crop_season_crops.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CropSeasonsModule } from './crop_seasons/crop_seasons.module';
     AddressModule,
     CropsModule,
     CropSeasonsModule,
+    CropSeasonCropsModule,
   ],
   controllers: [],
   providers: [],

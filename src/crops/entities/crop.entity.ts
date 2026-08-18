@@ -1,8 +1,10 @@
+import { CropSeasonCrop } from 'src/crop_season_crops/entities/crop_season_crop.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +16,9 @@ export class Crop {
 
   @Column()
   name!: string;
+
+  @OneToMany(() => CropSeasonCrop, (cropSeasonCrop) => cropSeasonCrop.crop)
+  cropSeasonCrops!: CropSeasonCrop[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
