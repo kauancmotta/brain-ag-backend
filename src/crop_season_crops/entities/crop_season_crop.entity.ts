@@ -8,10 +8,14 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('crop_season_crops')
 export class CropSeasonCrop {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
   @Column({ name: 'crop_season_id', type: 'uuid' })
   cropSeasonId!: string;
 
