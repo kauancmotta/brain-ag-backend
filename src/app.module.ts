@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CustomersModule } from './customers/customers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { EntitiesModule } from './entities/entities.module';
 import { AddressModule } from './address/address.module';
 
 @Module({
@@ -14,6 +15,7 @@ import { AddressModule } from './address/address.module';
       synchronize: process.env.NODE_ENV !== 'production',
     }),
     CustomersModule,
+    EntitiesModule,
     AddressModule,
   ],
   controllers: [],
