@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EntitiesModule } from './entities/entities.module';
 import { AddressModule } from './address/address.module';
 import { CropsModule } from './crops/crops.module';
+import { CropSeasonsModule } from './crop_seasons/crop_seasons.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CropsModule } from './crops/crops.module';
     EntitiesModule,
     AddressModule,
     CropsModule,
+    CropSeasonsModule,
   ],
   controllers: [],
   providers: [],
