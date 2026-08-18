@@ -1,8 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity as EntityORM,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Entity } from 'src/entities/entities/entity.entity';
 
@@ -28,4 +31,13 @@ export class Address {
 
   @OneToMany(() => Entity, (entity) => entity.address)
   entities!: Entity[];
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  updatedAt!: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
+  deletedAt?: Date | null;
 }
