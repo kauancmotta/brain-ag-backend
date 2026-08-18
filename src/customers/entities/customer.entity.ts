@@ -20,6 +20,9 @@ export class Customer {
   @Column()
   name!: string;
 
+  @Column({ unique: true })
+  email!: string;
+
   @OneToMany(
     () => CustomerEntity,
     (customerEntity) => customerEntity.customer,
