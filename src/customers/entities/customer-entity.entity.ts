@@ -1,16 +1,16 @@
 import {
+  Entity,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity as EntityORM,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Customer } from './customer.entity';
-import { Entity } from 'src/entities/entities/entity.entity';
+import { PropertyEntity } from 'src/entities/entities/entity.entity';
 
-@EntityORM('customer_entities')
+@Entity('customer_entities')
 export class CustomerEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -19,12 +19,12 @@ export class CustomerEntity {
   @JoinColumn({ name: 'customer_id' })
   customer!: Customer;
 
-  @ManyToOne(() => Entity, (entity) => entity.customerEntities)
+  @ManyToOne(() => PropertyEntity, (propertyEntity) => propertyEntity.customerEntities)
   @JoinColumn({
     name: 'entity_id',
     foreignKeyConstraintName: 'fk_customers_entity_id',
   })
-  entity!: Entity;
+  entity!: PropertyEntity;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;

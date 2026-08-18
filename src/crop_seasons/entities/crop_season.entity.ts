@@ -1,5 +1,5 @@
 import {
-  Entity as EntityORM,
+  Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
@@ -9,10 +9,10 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Entity } from 'src/entities/entities/entity.entity';
+import { PropertyEntity } from 'src/entities/entities/entity.entity';
 import { CropSeasonCrop } from 'src/crop_season_crops/entities/crop_season_crop.entity';
 
-@EntityORM('crop_seasons')
+@Entity('crop_seasons')
 export class CropSeason {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -20,9 +20,9 @@ export class CropSeason {
   @Column({ name: 'entity_id', type: 'uuid' })
   entityId!: string;
 
-  @ManyToOne(() => Entity, (entity) => entity.cropSeasons)
+  @ManyToOne(() => PropertyEntity, (propertyEntity) => propertyEntity.cropSeasons)
   @JoinColumn({ name: 'entity_id' })
-  entity!: Entity;
+  entity!: PropertyEntity;
 
   @Column()
   name!: string;

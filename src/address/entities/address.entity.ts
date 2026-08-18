@@ -2,14 +2,14 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity as EntityORM,
+  Entity,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Entity } from 'src/entities/entities/entity.entity';
+import { PropertyEntity } from 'src/entities/entities/entity.entity';
 
-@EntityORM('addresses')
+@Entity('addresses')
 export class Address {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -29,8 +29,8 @@ export class Address {
   @Column({ name: 'zip_code' })
   zipCode!: string;
 
-  @OneToMany(() => Entity, (entity) => entity.address)
-  entities!: Entity[];
+  @OneToMany(() => PropertyEntity, (propertyEntity) => propertyEntity.address)
+  entities!: PropertyEntity[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;

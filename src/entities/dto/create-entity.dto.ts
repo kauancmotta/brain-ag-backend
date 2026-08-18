@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
+import {
+  IsDefined,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID,
+  Min,
+} from 'class-validator';
 
 export class CreateEntityDto {
   @ApiProperty()
@@ -8,22 +16,44 @@ export class CreateEntityDto {
   name!: string;
 
   @ApiProperty()
+  @IsEmail()
+  @IsNotEmpty()
+  email!: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  phone!: string;
+
+  @ApiProperty()
   @IsUUID()
   @IsNotEmpty()
   addressId!: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 150.25,
+    description: 'Total entity area in hectares',
+  })
+  @IsDefined()
   @IsNumber({ maxDecimalPlaces: 2 })
-  @IsNotEmpty()
+  @Min(0)
   totalArea!: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 100.5,
+    description: 'Agricultural area in hectares',
+  })
+  @IsDefined()
   @IsNumber({ maxDecimalPlaces: 2 })
-  @IsNotEmpty()
+  @Min(0)
   agricultureArea!: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 49.75,
+    description: 'Vegetation area in hectares',
+  })
+  @IsDefined()
   @IsNumber({ maxDecimalPlaces: 2 })
-  @IsNotEmpty()
+  @Min(0)
   vegetationArea!: number;
 }

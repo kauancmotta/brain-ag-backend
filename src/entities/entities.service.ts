@@ -3,25 +3,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateEntityDto } from './dto/create-entity.dto';
 import { UpdateEntityDto } from './dto/update-entity.dto';
-import { Entity } from './entities/entity.entity';
+import { PropertyEntity } from './entities/entity.entity';
 
 @Injectable()
 export class EntitiesService {
   constructor(
-    @InjectRepository(Entity)
-    private readonly entityRepository: Repository<Entity>,
+    @InjectRepository(PropertyEntity)
+    private readonly entityRepository: Repository<PropertyEntity>,
   ) {}
 
-  async create(createEntityDto: CreateEntityDto): Promise<Entity> {
+  async create(createEntityDto: CreateEntityDto): Promise<PropertyEntity> {
     const entity = this.entityRepository.create(createEntityDto);
     return this.entityRepository.save(entity);
   }
 
-  findAll(): Promise<Entity[]> {
+  findAll(): Promise<PropertyEntity[]> {
     return this.entityRepository.find();
   }
 
-  async findOne(id: string): Promise<Entity> {
+  async findOne(id: string): Promise<PropertyEntity> {
     const entity = await this.entityRepository.findOne({ where: { id } });
 
     if (!entity) {
@@ -31,7 +31,7 @@ export class EntitiesService {
     return entity;
   }
 
-  async update(id: string, updateEntityDto: UpdateEntityDto): Promise<Entity> {
+  async update(id: string, updateEntityDto: UpdateEntityDto): Promise<PropertyEntity> {
     const entity = await this.findOne(id);
     Object.assign(entity, updateEntityDto);
     return this.entityRepository.save(entity);

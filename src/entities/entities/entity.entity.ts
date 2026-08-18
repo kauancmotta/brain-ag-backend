@@ -2,7 +2,7 @@ import { Address } from 'src/address/entities/address.entity';
 import { CropSeason } from 'src/crop_seasons/entities/crop_season.entity';
 import { CustomerEntity } from 'src/customers/entities/customer-entity.entity';
 import {
-  Entity as EntityORM,
+  Entity,
   Column,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -13,13 +13,19 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 
-@EntityORM('entities')
-export class Entity {
+@Entity('entities')
+export class PropertyEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column()
   name!: string;
+
+  @Column({ unique: true })
+  email!: string;
+
+  @Column()
+  phone!: string;
 
   @Column({ name: 'address_id', type: 'uuid' })
   addressId!: string;
