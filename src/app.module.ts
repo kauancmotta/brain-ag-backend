@@ -14,7 +14,7 @@ import { CropSeasonCropsModule } from './crop_season_crops/crop_season_crops.mod
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      entities: [],
+      autoLoadEntities: true,
       synchronize: process.env.NODE_ENV !== 'production',
     }),
     CustomersModule,
