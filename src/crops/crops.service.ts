@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateCropDto } from './dto/create-crop.dto';
 import { UpdateCropDto } from './dto/update-crop.dto';
+import { Crop } from './entities/crop.entity';
 
 @Injectable()
 export class CropsService {
-  create(createCropDto: CreateCropDto) {
-    return 'This action adds a new crop';
+  constructor(
+    @InjectRepository(Crop)
+    private readonly cropRepository: Repository<Crop>,
+  ) {}
+
+  async create(createCropDto: CreateCropDto): Promise<Crop> {
+    const crop = this.cropRepository.create(createCropDto);
+    return this.cropRepository.save(crop);
   }
 
-  findAll() {
-    return `This action returns all crops`;
+  findAll(): Promise<Crop[]> {
+    return this.cropRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} crop`;
+  async findOne(id: string): Promise<Crop> {
+    const crop = await this.cropRepository.findOne({ where: { id } });
+
+    if (!crop) {
+      throw new NotFoundException(`Crop with id ${id} not found`);
+    }
+
+    return crop;
   }
 
-  update(id: number, updateCropDto: UpdateCropDto) {
-    return `This action updates a #${id} crop`;
+  async update(id: string, updateCropDto: UpdateCropDto): Promise<Crop> {
+    const crop = await this.findOne(id);
+    Object.assign(crop, updateCropDto);
+    return this.cropRepository.save(crop);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} crop`;
+  async remove(id: string): Promise<void> {
+    await this.findOne(id);
+    await this.cropRepository.softDelete(id);
   }
 }

@@ -1,38 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class CustomersService {
   constructor(
     @InjectRepository(Customer)
-    private customersRepository: Repository<Customer>,
+    private readonly customersRepository: Repository<Customer>,
   ) {}
 
-  create(createCustomerDto: CreateCustomerDto) {
-    return this.customersRepository.create(createCustomerDto);
+  async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
+    const customer = this.customersRepository.create(createCustomerDto);
+    return this.customersRepository.save(customer);
   }
 
-  findAll() {
+  findAll(): Promise<Customer[]> {
     return this.customersRepository.find();
   }
 
-  findOne(id: string) {
-    return this.customersRepository.findOne({ where: { id } });
+  async findOne(id: string): Promise<Customer> {
+    const customer = await this.customersRepository.findOne({ where: { id } });
+
+    if (!customer) {
+      throw new NotFoundException(`Customer with id ${id} not found`);
+    }
+
+    return customer;
   }
 
-  update(id: string, updateCustomerDto: UpdateCustomerDto) {
-    return this.customersRepository.update(id, updateCustomerDto);
+  async update(id: string, updateCustomerDto: UpdateCustomerDto): Promise<Customer> {
+    const customer = await this.findOne(id);
+
+    Object.assign(customer, updateCustomerDto);
+
+    return this.customersRepository.save(customer);
   }
 
-  remove(id: string) {
-    return this.customersRepository.softDelete(id)
+  async remove(id: string): Promise<void> {
+    await this.findOne(id);
+    await this.customersRepository.softDelete(id);
   }
 
-  restore(id: string) {
-    return this.customersRepository.restore(id)
+  async restore(id: string): Promise<void> {
+    await this.customersRepository.restore(id);
   }
 }

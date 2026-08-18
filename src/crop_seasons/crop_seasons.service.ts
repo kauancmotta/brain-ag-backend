@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateCropSeasonDto } from './dto/create-crop_season.dto';
 import { UpdateCropSeasonDto } from './dto/update-crop_season.dto';
+import { CropSeason } from './entities/crop_season.entity';
 
 @Injectable()
 export class CropSeasonsService {
-  create(createCropSeasonDto: CreateCropSeasonDto) {
-    return 'This action adds a new cropSeason';
+  constructor(
+    @InjectRepository(CropSeason)
+    private readonly cropSeasonRepository: Repository<CropSeason>,
+  ) {}
+
+  async create(createCropSeasonDto: CreateCropSeasonDto): Promise<CropSeason> {
+    const cropSeason = this.cropSeasonRepository.create(createCropSeasonDto);
+    return this.cropSeasonRepository.save(cropSeason);
   }
 
-  findAll() {
-    return `This action returns all cropSeasons`;
+  findAll(): Promise<CropSeason[]> {
+    return this.cropSeasonRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cropSeason`;
+  async findOne(id: string): Promise<CropSeason> {
+    const cropSeason = await this.cropSeasonRepository.findOne({ where: { id } });
+
+    if (!cropSeason) {
+      throw new NotFoundException(`Crop season with id ${id} not found`);
+    }
+
+    return cropSeason;
   }
 
-  update(id: number, updateCropSeasonDto: UpdateCropSeasonDto) {
-    return `This action updates a #${id} cropSeason`;
+  async update(id: string, updateCropSeasonDto: UpdateCropSeasonDto): Promise<CropSeason> {
+    const cropSeason = await this.findOne(id);
+    Object.assign(cropSeason, updateCropSeasonDto);
+    return this.cropSeasonRepository.save(cropSeason);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cropSeason`;
+  async remove(id: string): Promise<void> {
+    await this.findOne(id);
+    await this.cropSeasonRepository.softDelete(id);
   }
 }
