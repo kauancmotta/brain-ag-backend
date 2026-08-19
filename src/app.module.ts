@@ -7,6 +7,7 @@ import { AddressModule } from './address/address.module';
 import { CropsModule } from './crops/crops.module';
 import { CropSeasonsModule } from './crop_seasons/crop_seasons.module';
 import { CropSeasonCropsModule } from './crop_season_crops/crop_season_crops.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { CropSeasonCropsModule } from './crop_season_crops/crop_season_crops.mod
       type: 'postgres',
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV !== 'production',
+      synchronize: false,
     }),
     CustomersModule,
     EntitiesModule,
@@ -23,6 +24,7 @@ import { CropSeasonCropsModule } from './crop_season_crops/crop_season_crops.mod
     CropsModule,
     CropSeasonsModule,
     CropSeasonCropsModule,
+    DashboardModule,
   ],
   controllers: [],
   providers: [],

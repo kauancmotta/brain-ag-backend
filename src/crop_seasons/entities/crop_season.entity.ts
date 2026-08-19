@@ -8,34 +8,34 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  Unique,
 } from 'typeorm';
-import { PropertyEntity } from 'src/entities/entities/entity.entity';
-import { CropSeasonCrop } from 'src/crop_season_crops/entities/crop_season_crop.entity';
+import { PropertyEntity } from '@/src/entities/entities/entity.entity';
+import { CropSeasonCrop } from '@/src/crop_season_crops/entities/crop_season_crop.entity';
 
+@Unique('uq_entity_crop_season_year', ['entity', 'year'])
 @Entity('crop_seasons')
 export class CropSeason {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ name: 'entity_id', type: 'uuid' })
-  entityId!: string;
-
-  @ManyToOne(() => PropertyEntity, (propertyEntity) => propertyEntity.cropSeasons)
-  @JoinColumn({ name: 'entity_id' })
+  @ManyToOne(() => PropertyEntity, (entity) => entity.cropSeasons, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({
+    name: 'entity_id',
+    foreignKeyConstraintName: 'fk_crop_seasons_entity_id',
+  })
   entity!: PropertyEntity;
 
   @Column()
-  name!: string;
-
-  @Column({ name: 'start_date', type: 'date' })
-  startDate!: Date;
-
-  @Column({ name: 'end_date', type: 'date' })
-  endDate!: Date;
+  year!: string;
 
   @OneToMany(
     () => CropSeasonCrop,
     (cropSeasonCrop) => cropSeasonCrop.cropSeason,
+    { cascade: ['remove'] },
   )
   cropSeasonCrops!: CropSeasonCrop[];
 

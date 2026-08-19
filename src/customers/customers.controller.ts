@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
@@ -25,7 +34,7 @@ export class CustomersController {
   @Get(':id')
   @ApiOperation({ summary: 'Get customer by id' })
   @ApiParam({ name: 'id', type: String })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.customersService.findOne(id);
   }
 
@@ -33,14 +42,18 @@ export class CustomersController {
   @ApiOperation({ summary: 'Update a customer' })
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: UpdateCustomerDto })
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ) {
     return this.customersService.update(id, updateCustomerDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a customer' })
   @ApiParam({ name: 'id', type: String })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.customersService.remove(id);
   }
+
 }

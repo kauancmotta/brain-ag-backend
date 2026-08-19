@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsPositive, IsUUID } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsNumber, IsUUID, Min } from 'class-validator';
 
 export class CreateCropSeasonCropDto {
   @ApiProperty()
@@ -13,7 +13,8 @@ export class CreateCropSeasonCropDto {
   cropId!: string;
 
   @ApiProperty()
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @IsPositive()
+  @IsDefined()
+  @IsNumber()
+  @Min(0)
   plantedArea!: number;
 }

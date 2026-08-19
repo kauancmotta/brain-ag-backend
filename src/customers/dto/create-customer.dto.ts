@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { IsDocument } from 'src/validators/is-document.decorator';
+import {
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
+import { IsDocument } from '@/src/validators/is-document.decorator';
 export class CreateCustomerDto {
   @ApiProperty()
   @IsString()

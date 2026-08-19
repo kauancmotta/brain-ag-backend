@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CustomerEntity } from './customer-entity.entity';
+import { PropertyEntity } from '@/src/entities/entities/entity.entity';
 
 @Entity('customers')
 export class Customer {
@@ -23,11 +23,8 @@ export class Customer {
   @Column({ unique: true })
   email!: string;
 
-  @OneToMany(
-    () => CustomerEntity,
-    (customerEntity) => customerEntity.customer,
-  )
-  customerEntities!: CustomerEntity[];
+  @OneToMany(() => PropertyEntity, (entity) => entity.customer)
+  entities!: PropertyEntity[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;

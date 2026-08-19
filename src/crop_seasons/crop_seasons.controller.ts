@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CropSeasonsService } from './crop_seasons.service';
 import { CreateCropSeasonDto } from './dto/create-crop_season.dto';
@@ -25,7 +34,7 @@ export class CropSeasonsController {
   @Get(':id')
   @ApiOperation({ summary: 'Get crop season by id' })
   @ApiParam({ name: 'id', type: String })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.cropSeasonsService.findOne(id);
   }
 
@@ -33,14 +42,18 @@ export class CropSeasonsController {
   @ApiOperation({ summary: 'Update a crop season' })
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: UpdateCropSeasonDto })
-  update(@Param('id') id: string, @Body() updateCropSeasonDto: UpdateCropSeasonDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCropSeasonDto: UpdateCropSeasonDto,
+  ) {
     return this.cropSeasonsService.update(id, updateCropSeasonDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a crop season' })
   @ApiParam({ name: 'id', type: String })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.cropSeasonsService.remove(id);
   }
+
 }

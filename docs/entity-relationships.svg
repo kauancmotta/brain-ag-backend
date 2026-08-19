@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="980" viewBox="0 0 1500 980" role="img" aria-labelledby="title desc">
+  <title id="title">Brain Agriculture entity relationships</title>
+  <desc id="desc">Entity relationship diagram for addresses, properties, customers, crop seasons and crops.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#172033" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#718096"/>
+    </marker>
+    <style>
+      .background { fill: #f5f7fb; }
+      .title { font: 700 30px Georgia, serif; fill: #172033; }
+      .subtitle { font: 400 15px Arial, sans-serif; fill: #5b667a; }
+      .entity { fill: #ffffff; stroke: #d8dfeb; stroke-width: 2; filter: url(#shadow); }
+      .join { fill: #fff9ed; stroke: #e8b84c; stroke-width: 2; filter: url(#shadow); }
+      .entity-title { font: 700 19px Arial, sans-serif; fill: #172033; }
+      .table-name { font: 600 12px Arial, sans-serif; fill: #6c7890; }
+      .field { font: 400 14px Arial, sans-serif; fill: #2d3748; }
+      .key { font: 700 13px Arial, sans-serif; fill: #1d6b72; }
+      .constraint { font: 400 12px Arial, sans-serif; fill: #8a5b08; }
+      .line { stroke: #718096; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .line-join { stroke: #d39b24; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .cardinality { font: 700 14px Arial, sans-serif; fill: #4a5568; }
+      .legend { font: 400 13px Arial, sans-serif; fill: #5b667a; }
+      .rule { fill: #eaf5f4; stroke: #b9dcd8; stroke-width: 1.5; }
+    </style>
+  </defs>
+
+  <rect class="background" width="1500" height="980"/>
+  <text class="title" x="70" y="66">Brain Agriculture</text>
+  <text class="subtitle" x="70" y="94">Entity relationship diagram based on the current TypeORM decorators</text>
+
+  <!-- Relationship lines are placed behind entity cards. -->
+  <path class="line" d="M340 286 C410 286, 410 310, 490 310"/>
+  <text class="cardinality" x="362" y="274">1</text>
+  <text class="cardinality" x="462" y="300">N</text>
+
+  <path class="line-join" d="M790 250 C790 210, 680 210, 680 190"/>
+  <text class="cardinality" x="700" y="203">N</text>
+  <text class="cardinality" x="774" y="235">1</text>
+
+  <path class="line-join" d="M1030 250 C1030 210, 1135 210, 1135 190"/>
+  <text class="cardinality" x="1050" y="203">N</text>
+  <text class="cardinality" x="1120" y="235">1</text>
+
+  <path class="line" d="M760 570 C760 625, 760 650, 760 700"/>
+  <text class="cardinality" x="777" y="610">1</text>
+  <text class="cardinality" x="777" y="682">N</text>
+
+  <path class="line-join" d="M950 790 C1030 790, 1050 790, 1120 790"/>
+  <text class="cardinality" x="974" y="776">N</text>
+  <text class="cardinality" x="1090" y="776">1</text>
+
+  <!-- Address -->
+  <g transform="translate(70 190)">
+    <rect class="entity" width="270" height="205" rx="10"/>
+    <rect width="270" height="54" rx="10" fill="#dcefed"/>
+    <rect y="44" width="270" height="10" fill="#dcefed"/>
+    <text class="entity-title" x="18" y="27">Address</text>
+    <text class="table-name" x="18" y="46">addresses</text>
+    <text class="key" x="18" y="82">PK  id : uuid</text>
+    <text class="field" x="18" y="108">street : string</text>
+    <text class="field" x="18" y="131">number : string</text>
+    <text class="field" x="18" y="154">city, state : string</text>
+    <text class="field" x="18" y="177">zipCode : string</text>
+  </g>
+
+  <!-- Property -->
+  <g transform="translate(490 250)">
+    <rect class="entity" width="540" height="320" rx="10"/>
+    <rect width="540" height="54" rx="10" fill="#e9eef8"/>
+    <rect y="44" width="540" height="10" fill="#e9eef8"/>
+    <text class="entity-title" x="18" y="27">entities</text>
+    <text class="table-name" x="18" y="46">entities</text>
+    <text class="key" x="18" y="82">PK  id : uuid</text>
+    <text class="field" x="18" y="108">name : string</text>
+    <text class="key" x="18" y="134">FK  addressId : uuid</text>
+    <text class="field" x="18" y="160">totalArea : decimal</text>
+    <text class="field" x="18" y="183">agricultureArea : decimal</text>
+    <text class="field" x="18" y="206">vegetationArea : decimal</text>
+    <text class="field" x="18" y="240">customerEntities : CustomerEntity[]</text>
+    <text class="field" x="18" y="263">cropSeasons : CropSeason[]</text>
+    <text class="constraint" x="18" y="296">CHECK agricultureArea + vegetationArea &lt;= totalArea</text>
+  </g>
+
+  <!-- Customer -->
+  <g transform="translate(570 70)">
+    <rect class="entity" width="260" height="150" rx="10"/>
+    <rect width="260" height="54" rx="10" fill="#f2e6f4"/>
+    <rect y="44" width="260" height="10" fill="#f2e6f4"/>
+    <text class="entity-title" x="18" y="27">Customer</text>
+    <text class="table-name" x="18" y="46">customers</text>
+    <text class="key" x="18" y="82">PK  id : uuid</text>
+    <text class="field" x="18" y="106">document : string UNIQUE</text>
+    <text class="field" x="18" y="128">email : string UNIQUE</text>
+  </g>
+
+  <!-- CustomerEntity -->
+  <g transform="translate(930 70)">
+    <rect class="join" width="260" height="150" rx="10"/>
+    <rect width="260" height="54" rx="10" fill="#fff0c9"/>
+    <rect y="44" width="260" height="10" fill="#fff0c9"/>
+    <text class="entity-title" x="18" y="27">CustomerEntity</text>
+    <text class="table-name" x="18" y="46">customer_entities</text>
+    <text class="key" x="18" y="82">PK  id : uuid</text>
+    <text class="key" x="18" y="106">FK  customer_id : uuid</text>
+    <text class="key" x="18" y="128">FK  entity_id : uuid</text>
+  </g>
+
+  <!-- CropSeason -->
+  <g transform="translate(610 700)">
+    <rect class="entity" width="300" height="180" rx="10"/>
+    <rect width="300" height="54" rx="10" fill="#e8f0dc"/>
+    <rect y="44" width="300" height="10" fill="#e8f0dc"/>
+    <text class="entity-title" x="18" y="27">CropSeason</text>
+    <text class="table-name" x="18" y="46">crop_seasons</text>
+    <text class="key" x="18" y="82">PK  id : uuid</text>
+    <text class="key" x="18" y="106">FK  entity_id : uuid</text>
+    <text class="field" x="18" y="130">year : string</text>
+    <text class="constraint" x="18" y="156">UNIQUE(entity, year)</text>
+  </g>
+
+  <!-- CropSeasonCrop -->
+  <g transform="translate(1120 700)">
+    <rect class="join" width="300" height="180" rx="10"/>
+    <rect width="300" height="54" rx="10" fill="#fff0c9"/>
+    <rect y="44" width="300" height="10" fill="#fff0c9"/>
+    <text class="entity-title" x="18" y="27">CropSeasonCrop</text>
+    <text class="table-name" x="18" y="46">crop_season_crops</text>
+    <text class="key" x="18" y="82">PK  id : uuid</text>
+    <text class="key" x="18" y="106">FK  crop_season_id : uuid</text>
+    <text class="key" x="18" y="130">FK  crop_id : uuid</text>
+    <text class="field" x="18" y="154">plantedArea : decimal</text>
+  </g>
+
+  <!-- Crop -->
+  <g transform="translate(1120 420)">
+    <rect class="entity" width="300" height="150" rx="10"/>
+    <rect width="300" height="54" rx="10" fill="#f8e4d8"/>
+    <rect y="44" width="300" height="10" fill="#f8e4d8"/>
+    <text class="entity-title" x="18" y="27">Crop</text>
+    <text class="table-name" x="18" y="46">crops</text>
+    <text class="key" x="18" y="82">PK  id : uuid</text>
+    <text class="field" x="18" y="106">name : string UNIQUE</text>
+    <text class="field" x="18" y="130">cropSeasonCrops : []</text>
+  </g>
+
+  <path class="line-join" d="M1120 500 C1050 500, 1010 590, 910 760"/>
+  <text class="cardinality" x="1060" y="532">1</text>
+  <text class="cardinality" x="935" y="715">N</text>
+
+  <rect class="rule" x="70" y="915" width="1360" height="38" rx="8"/>
+  <text class="legend" x="90" y="939">Legend: blue/white = core entity | amber = join entity | PK = primary key | FK = foreign key | 1:N labels show the TypeORM cardinality</text>
+</svg>

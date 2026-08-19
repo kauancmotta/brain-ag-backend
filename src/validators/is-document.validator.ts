@@ -1,16 +1,17 @@
-// Sanitiza: remove formatação (pontos, traços, barras)
-function sanitize(value: string): string {
-  return value.replace(/[.\-\/]/g, '').toUpperCase();
+// CPF: 11 dígitos numéricos
+// CNPJ: 12 chars alfanuméricos [A-Z0-9] + 2 dígitos numéricos
+const CPF_REGEX = /^\d{11}$/;
+const CNPJ_REGEX = /^[A-Z0-9]{12}\d{2}$/;
+
+function charValue(ch: string): number {
+  return ch.charCodeAt(0) - 48;
 }
 
-// CPF — apenas numérico, 11 dígitos
-function isValidCPF(cpf: string): boolean {
-  const clean = sanitize(cpf);
+function isValidCPF(value: string): boolean {
+  if (!CPF_REGEX.test(value)) return false;
+  if (/^(\d)\1{10}$/.test(value)) return false;
 
-  if (!/^\d{11}$/.test(clean)) return false;
-  if (/^(\d)\1{10}$/.test(clean)) return false; // sequências iguais (ex: 111.111.111-11)
-
-  const calcDigit = (base: string, weights: number[]) => {
+  const calcDigit = (base: string, weights: number[]): number => {
     const sum = base
       .split('')
       .reduce((acc, ch, i) => acc + Number(ch) * weights[i], 0);
@@ -18,22 +19,18 @@ function isValidCPF(cpf: string): boolean {
     return remainder < 2 ? 0 : 11 - remainder;
   };
 
-  const digit1 = calcDigit(clean.slice(0, 9), [10, 9, 8, 7, 6, 5, 4, 3, 2]);
-  const digit2 = calcDigit(clean.slice(0, 10), [11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
+  const digit1 = calcDigit(value.slice(0, 9), [10, 9, 8, 7, 6, 5, 4, 3, 2]);
+  const digit2 = calcDigit(
+    value.slice(0, 10),
+    [11, 10, 9, 8, 7, 6, 5, 4, 3, 2],
+  );
 
-  return Number(clean[9]) === digit1 && Number(clean[10]) === digit2;
+  return Number(value[9]) === digit1 && Number(value[10]) === digit2;
 }
 
-// CNPJ — suporta formato numérico clássico e alfanumérico (novo formato 2026)
-// Algoritmo: Módulo 11 com valor ASCII - 48 por caractere
-function isValidCNPJ(cnpj: string): boolean {
-  const clean = sanitize(cnpj);
-
-  // Formato: 12 chars alfanuméricos [A-Z0-9] + 2 dígitos verificadores numéricos
-  if (!/^[A-Z0-9]{12}\d{2}$/.test(clean)) return false;
-  if (/^(.)\1{13}$/.test(clean)) return false; // todos iguais (ex: 00000000000000)
-
-  const charValue = (ch: string): number => ch.charCodeAt(0) - 48;
+function isValidCNPJ(value: string): boolean {
+  if (!CNPJ_REGEX.test(value)) return false;
+  if (/^(.)\1{13}$/.test(value)) return false;
 
   const calcDigit = (base: string, weights: number[]): number => {
     const sum = base
@@ -46,15 +43,14 @@ function isValidCNPJ(cnpj: string): boolean {
   const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
   const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
 
-  const digit1 = calcDigit(clean.slice(0, 12), weights1);
-  const digit2 = calcDigit(clean.slice(0, 13), weights2);
+  const digit1 = calcDigit(value.slice(0, 12), weights1);
+  const digit2 = calcDigit(value.slice(0, 13), weights2);
 
-  return Number(clean[12]) === digit1 && Number(clean[13]) === digit2;
+  return Number(value[12]) === digit1 && Number(value[13]) === digit2;
 }
 
 export function isValidDocument(value: string): boolean {
-  const clean = sanitize(value);
-  if (clean.length === 11) return isValidCPF(clean);
-  if (clean.length === 14) return isValidCNPJ(clean);
+  if (value.length === 11) return isValidCPF(value);
+  if (value.length === 14) return isValidCNPJ(value);
   return false;
 }

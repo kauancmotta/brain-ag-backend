@@ -11,7 +11,9 @@ describe('CropSeasonCropsController', () => {
       providers: [{ provide: CropSeasonCropsService, useValue: {} }],
     }).compile();
 
-    controller = module.get<CropSeasonCropsController>(CropSeasonCropsController);
+    controller = module.get<CropSeasonCropsController>(
+      CropSeasonCropsController,
+    );
   });
 
   it('should be defined', () => {

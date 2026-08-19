@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:18
+    # volumes:
+      # - pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: brainagDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "brain-ag"
+    networks:
+      - db
+    ports:
+      - "5432:5432"
+
+networks:
+  db:
+    driver: bridge

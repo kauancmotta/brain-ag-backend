@@ -31,7 +31,10 @@ export class AddressService {
     return address;
   }
 
-  async update(id: string, updateAddressDto: UpdateAddressDto): Promise<Address> {
+  async update(
+    id: string,
+    updateAddressDto: UpdateAddressDto,
+  ): Promise<Address> {
     const address = await this.findOne(id);
     Object.assign(address, updateAddressDto);
     return this.addressRepository.save(address);

@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateCropSeasonCropDto } from './create-crop_season_crop.dto';
+import { IsNumber, Min } from 'class-validator';
 
-export class UpdateCropSeasonCropDto extends PartialType(CreateCropSeasonCropDto) {}
+export class UpdateCropSeasonCropDto {
+  @IsNumber()
+  @Min(0)
+  plantedArea!: number;
+}

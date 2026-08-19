@@ -1,6 +1,6 @@
-import { Address } from 'src/address/entities/address.entity';
-import { CropSeason } from 'src/crop_seasons/entities/crop_season.entity';
-import { CustomerEntity } from 'src/customers/entities/customer-entity.entity';
+import { Address } from '@/src/address/entities/address.entity';
+import { CropSeason } from '@/src/crop_seasons/entities/crop_season.entity';
+import { Customer } from '@/src/customers/entities/customer.entity';
 import {
   Entity,
   Column,
@@ -11,8 +11,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Check,
 } from 'typeorm';
 
+@Check(
+  'CHK_entities_areas',
+  '"agriculture_area" + "vegetation_area" <= "total_area"',
+)
 @Entity('entities')
 export class PropertyEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -21,18 +26,22 @@ export class PropertyEntity {
   @Column()
   name!: string;
 
-  @Column({ unique: true })
-  email!: string;
-
-  @Column()
-  phone!: string;
-
-  @Column({ name: 'address_id', type: 'uuid' })
-  addressId!: string;
-
-  @ManyToOne(() => Address, (address) => address.entities)
+  @ManyToOne(() => Address, (address) => address.entities, {
+    cascade: ['insert'],
+    eager: true,
+  })
   @JoinColumn({ name: 'address_id' })
   address!: Address;
+
+  @ManyToOne(() => Customer, (customer) => customer.entities, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({
+    name: 'customer_id',
+    foreignKeyConstraintName: 'fk_entities_customer_id',
+  })
+  customer!: Customer;
 
   @Column({ name: 'total_area', type: 'decimal' })
   totalArea!: number;
@@ -43,10 +52,9 @@ export class PropertyEntity {
   @Column({ name: 'vegetation_area', type: 'decimal' })
   vegetationArea!: number;
 
-  @OneToMany(() => CustomerEntity, (customerEntity) => customerEntity.entity)
-  customerEntities!: CustomerEntity[];
-
-  @OneToMany(() => CropSeason, (cropSeason) => cropSeason.entity)
+  @OneToMany(() => CropSeason, (cropSeason) => cropSeason.entity, {
+    cascade: ['remove'],
+  })
   cropSeasons!: CropSeason[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

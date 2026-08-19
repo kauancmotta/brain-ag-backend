@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CropsService } from './crops.service';
 import { CreateCropDto } from './dto/create-crop.dto';
@@ -25,7 +34,7 @@ export class CropsController {
   @Get(':id')
   @ApiOperation({ summary: 'Get crop by id' })
   @ApiParam({ name: 'id', type: String })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.cropsService.findOne(id);
   }
 
@@ -33,14 +42,17 @@ export class CropsController {
   @ApiOperation({ summary: 'Update a crop' })
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: UpdateCropDto })
-  update(@Param('id') id: string, @Body() updateCropDto: UpdateCropDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCropDto: UpdateCropDto,
+  ) {
     return this.cropsService.update(id, updateCropDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a crop' })
   @ApiParam({ name: 'id', type: String })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.cropsService.remove(id);
   }
 }

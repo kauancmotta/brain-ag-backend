@@ -1,13 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDefined,
-  IsEmail,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateAddressDto } from '@/src/address/dto/create-address.dto';
 
 export class CreateEntityDto {
   @ApiProperty()
@@ -15,20 +18,11 @@ export class CreateEntityDto {
   @IsNotEmpty()
   name!: string;
 
-  @ApiProperty()
-  @IsEmail()
-  @IsNotEmpty()
-  email!: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  phone!: string;
-
-  @ApiProperty()
-  @IsUUID()
-  @IsNotEmpty()
-  addressId!: string;
+  @ApiProperty({ type: CreateAddressDto, required: false })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
+  address?: CreateAddressDto;
 
   @ApiProperty({
     example: 150.25,
@@ -56,4 +50,9 @@ export class CreateEntityDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   vegetationArea!: number;
+
+  @ApiProperty()
+  @IsUUID()
+  @IsNotEmpty()
+  customerId!: string;
 }

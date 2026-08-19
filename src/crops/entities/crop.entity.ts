@@ -1,4 +1,4 @@
-import { CropSeasonCrop } from 'src/crop_season_crops/entities/crop_season_crop.entity';
+import { CropSeasonCrop } from '@/src/crop_season_crops/entities/crop_season_crop.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,9 +6,11 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 
+@Unique('uq_crops_name', ['name'])
 @Entity('crops')
 export class Crop {
   @PrimaryGeneratedColumn('uuid')
@@ -25,7 +27,4 @@ export class Crop {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
-  deletedAt?: Date | null;
 }

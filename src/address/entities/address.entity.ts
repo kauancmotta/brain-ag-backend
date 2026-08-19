@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { PropertyEntity } from 'src/entities/entities/entity.entity';
+import { PropertyEntity } from '@/src/entities/entities/entity.entity';
 
 @Entity('addresses')
 export class Address {

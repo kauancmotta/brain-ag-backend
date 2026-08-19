@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID, Matches } from 'class-validator';
 
 export class CreateCropSeasonDto {
   @ApiProperty()
@@ -8,20 +7,14 @@ export class CreateCropSeasonDto {
   @IsNotEmpty()
   entityId!: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: '2026',
+    description: 'Crop season year in YYYY format',
+  })
   @IsString()
   @IsNotEmpty()
-  name!: string;
-
-  @ApiProperty()
-  @Type(() => Date)
-  @IsDate()
-  @IsNotEmpty()
-  startDate!: Date;
-
-  @ApiProperty()
-  @Type(() => Date)
-  @IsDate()
-  @IsNotEmpty()
-  endDate!: Date;
+  @Matches(/^\d{4}$/, {
+    message: 'year must contain exactly 4 digits',
+  })
+  year!: string;
 }
