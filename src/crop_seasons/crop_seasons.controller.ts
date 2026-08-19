@@ -55,5 +55,4 @@ export class CropSeasonsController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.cropSeasonsService.remove(id);
   }
-
 }

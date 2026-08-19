@@ -39,4 +39,14 @@ describe('AddressController', () => {
 
     expect(service.create).toHaveBeenCalledWith(dto);
   });
+
+  it('should delegate update and remove to service', () => {
+    const dto = { city: 'Curitiba' };
+
+    controller.update('address-1', dto);
+    controller.remove('address-1');
+
+    expect(service.update).toHaveBeenCalledWith('address-1', dto);
+    expect(service.remove).toHaveBeenCalledWith('address-1');
+  });
 });

@@ -59,4 +59,17 @@ describe('AddressService', () => {
       NotFoundException,
     );
   });
+
+  it('should list, update, and soft-delete addresses', async () => {
+    const address = { id: 'address-1', city: 'São Paulo' };
+    repo.find.mockResolvedValue([address]);
+    repo.findOne.mockResolvedValue(address);
+    repo.save.mockResolvedValue({ ...address, city: 'Curitiba' });
+
+    await expect(service.findAll()).resolves.toEqual([address]);
+    await expect(service.update('address-1', { city: 'Curitiba' } as any))
+      .resolves.toMatchObject({ city: 'Curitiba' });
+    await expect(service.remove('address-1')).resolves.toBeUndefined();
+    expect(repo.softDelete).toHaveBeenCalledWith('address-1');
+  });
 });

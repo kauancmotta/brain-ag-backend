@@ -121,4 +121,19 @@ describe('CropSeasonsService', () => {
     await expect(validate(invalidDto)).resolves.not.toHaveLength(0);
     await expect(validate(validDto)).resolves.toHaveLength(0);
   });
+
+  it('should list, find, update, and soft-delete crop seasons', async () => {
+    const cropSeason = { id: 'season-1', entity: { id: 'entity-1' }, year: '2026' };
+    cropSeasonsRepository.find.mockResolvedValue([cropSeason]);
+    cropSeasonsRepository.findOne.mockResolvedValue(cropSeason);
+    cropSeasonsRepository.save.mockResolvedValue(cropSeason);
+
+    await expect(service.findAll()).resolves.toEqual([cropSeason]);
+    await expect(service.findOne('season-1')).resolves.toEqual(cropSeason);
+    await expect(
+      service.update('season-1', { year: '2026' }),
+    ).resolves.toEqual(cropSeason);
+    await expect(service.remove('season-1')).resolves.toBeUndefined();
+    expect(cropSeasonsRepository.softDelete).toHaveBeenCalledWith('season-1');
+  });
 });

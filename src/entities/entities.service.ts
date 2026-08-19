@@ -50,7 +50,13 @@ export class EntitiesService {
       throw new NotFoundException('Customer not found');
     }
 
-    const { customerId, ...entityData } = createEntityDto;
+    const entityData = {
+      name: createEntityDto.name,
+      address: createEntityDto.address,
+      totalArea: createEntityDto.totalArea,
+      agricultureArea: createEntityDto.agricultureArea,
+      vegetationArea: createEntityDto.vegetationArea,
+    };
     const entity = this.entityRepository.create({
       ...entityData,
       customer,
@@ -129,6 +135,7 @@ export class EntitiesService {
         entity: { id: entityId },
         year: createDto.year,
       },
+      withDeleted: true,
     });
 
     if (existing) {
@@ -191,6 +198,7 @@ export class EntitiesService {
           entity: { id: entityId },
           year,
         },
+        withDeleted: true,
       });
 
       if (existing && existing.id !== cropSeasonId) {
@@ -258,6 +266,7 @@ export class EntitiesService {
         cropSeason: { id: cropSeasonId },
         crop: { id: createDto.cropId },
       },
+      withDeleted: true,
     });
 
     if (existing) {
@@ -266,10 +275,7 @@ export class EntitiesService {
       );
     }
 
-    await this.ensurePlantedAreaAvailable(
-      cropSeason,
-      createDto.plantedArea,
-    );
+    await this.ensurePlantedAreaAvailable(cropSeason, createDto.plantedArea);
 
     const cropSeasonCrop = this.cropSeasonCropsRepository.create({
       cropSeason,
@@ -335,6 +341,17 @@ export class EntitiesService {
   ): Promise<PropertyEntity> {
     const entity = await this.findOne(id);
     const { customerId, ...entityData } = updateEntityDto;
+
+    const totalArea = entityData.totalArea ?? entity.totalArea;
+    const agricultureArea =
+      entityData.agricultureArea ?? entity.agricultureArea;
+    const vegetationArea = entityData.vegetationArea ?? entity.vegetationArea;
+
+    if (agricultureArea + vegetationArea > totalArea) {
+      throw new BadRequestException(
+        'Agricultural and vegetation areas cannot exceed total area',
+      );
+    }
 
     if (customerId) {
       const customer = await this.customerRepository.findOneBy({

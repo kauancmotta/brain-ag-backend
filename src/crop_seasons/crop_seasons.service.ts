@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCropSeasonDto } from './dto/create-crop_season.dto';
@@ -114,6 +118,7 @@ export class CropSeasonsService {
         entity: { id: entityId },
         year,
       },
+      withDeleted: true,
     });
 
     if (existing && existing.id !== excludeId) {

@@ -58,11 +58,23 @@ export class CustomersService {
     return this.customersRepository.save(customer);
   }
 
-  findAll(): Promise<Customer[]> {
-    return this.customersRepository.find();
+  async findAll(): Promise<CustomerResponseDto[]> {
+    const customers = await this.customersRepository.find({
+      relations: { entities: true },
+    });
+
+    return customers.map((customer) =>
+      CustomerResponseMapper.toResponse(customer),
+    );
   }
 
   async findOne(id: string): Promise<CustomerResponseDto> {
+    const customer = await this.findCustomer(id);
+
+    return CustomerResponseMapper.toResponse(customer);
+  }
+
+  private async findCustomer(id: string): Promise<Customer> {
     const customer = await this.customersRepository.findOne({
       where: { id },
       relations: {
@@ -74,14 +86,14 @@ export class CustomersService {
       throw new NotFoundException('Customer not found');
     }
 
-    return CustomerResponseMapper.toResponse(customer);
+    return customer;
   }
 
   async update(
     id: string,
     updateCustomerDto: UpdateCustomerDto,
   ): Promise<Customer> {
-    const customer = await this.findOne(id);
+    const customer = await this.findCustomer(id);
 
     Object.assign(customer, updateCustomerDto);
 
@@ -96,5 +108,4 @@ export class CustomersService {
   async restore(id: string): Promise<void> {
     await this.customersRepository.restore(id);
   }
-
 }

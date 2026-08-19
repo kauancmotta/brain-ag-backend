@@ -76,4 +76,40 @@ describe('CustomersService', () => {
       relations: { entities: true },
     });
   });
+
+  it('should update the customer entity instead of the response DTO', async () => {
+    const customer = {
+      id: 'customer-1',
+      document: '12345678901',
+      name: 'Ana',
+      email: 'ana@test.com',
+      entities: [],
+    };
+    customersRepository.findOne.mockResolvedValue(customer);
+    customersRepository.save.mockResolvedValue({
+      ...customer,
+      name: 'Ana Silva',
+    });
+
+    await expect(
+      service.update('customer-1', { name: 'Ana Silva' }),
+    ).resolves.toMatchObject({ name: 'Ana Silva' });
+    expect(customersRepository.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'customer-1',
+        document: '12345678901',
+        email: 'ana@test.com',
+        name: 'Ana Silva',
+      }),
+    );
+  });
+
+  it('should load entities when listing customers', async () => {
+    customersRepository.find.mockResolvedValue([]);
+
+    await expect(service.findAll()).resolves.toEqual([]);
+    expect(customersRepository.find).toHaveBeenCalledWith({
+      relations: { entities: true },
+    });
+  });
 });

@@ -61,10 +61,35 @@ describe('CropsService', () => {
     );
   });
 
+  it('should create, list, find, and update a crop', async () => {
+    const crop = { id: 'crop-1', name: 'Corn' };
+    cropsRepository.exists.mockResolvedValue(false);
+    cropsRepository.create.mockReturnValue(crop);
+    cropsRepository.save.mockResolvedValue(crop);
+    cropsRepository.find.mockResolvedValue([crop]);
+    cropsRepository.findOne.mockResolvedValue(crop);
+
+    await expect(service.create({ name: 'Corn' })).resolves.toEqual(crop);
+    await expect(service.findAll()).resolves.toEqual([crop]);
+    await expect(service.findOne('crop-1')).resolves.toEqual(crop);
+    await expect(service.update('crop-1', { name: 'Corn' })).resolves.toEqual(
+      crop,
+    );
+  });
+
   it('should prevent deleting a crop in use', async () => {
     cropsRepository.findOne.mockResolvedValue({ id: 'crop-1', name: 'Corn' });
     cropSeasonCropsRepository.exists.mockResolvedValue(true);
 
     await expect(service.remove('crop-1')).rejects.toThrow(ConflictException);
   });
+
+    it('should delete an unused crop', async () => {
+      const crop = { id: 'crop-1', name: 'Corn' };
+      cropsRepository.findOne.mockResolvedValue(crop);
+      cropSeasonCropsRepository.exists.mockResolvedValue(false);
+
+      await expect(service.remove('crop-1')).resolves.toBeUndefined();
+      expect(cropsRepository.remove).toHaveBeenCalledWith(crop);
+    });
 });

@@ -99,9 +99,7 @@ export class EntitiesController {
     );
   }
 
-  @Post(
-    ':entityId/crop-seasons/:cropSeasonId/crop-season-crops',
-  )
+  @Post(':entityId/crop-seasons/:cropSeasonId/crop-season-crops')
   @ApiOperation({ summary: 'Add a planted crop to an entity crop season' })
   @ApiParam({ name: 'entityId', type: String })
   @ApiParam({ name: 'cropSeasonId', type: String })
@@ -162,7 +160,7 @@ export class EntitiesController {
   @Get(':id')
   @ApiOperation({ summary: 'Get entity by id' })
   @ApiParam({ name: 'id', type: String })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.entitiesService.findOne(id);
   }
 
@@ -170,14 +168,17 @@ export class EntitiesController {
   @ApiOperation({ summary: 'Update an entity' })
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: UpdateEntityDto })
-  update(@Param('id') id: string, @Body() updateEntityDto: UpdateEntityDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateEntityDto: UpdateEntityDto,
+  ) {
     return this.entitiesService.update(id, updateEntityDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an entity' })
   @ApiParam({ name: 'id', type: String })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.entitiesService.remove(id);
   }
 }

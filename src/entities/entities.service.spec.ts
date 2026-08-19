@@ -106,6 +106,20 @@ describe('EntitiesService', () => {
     ).rejects.toThrow(BadRequestException);
   });
 
+  it('should reject update when the farm areas become inconsistent', async () => {
+    repo.findOne.mockResolvedValue({
+      id: 'entity-1',
+      totalArea: 100,
+      agricultureArea: 60,
+      vegetationArea: 40,
+    });
+
+    await expect(
+      service.update('entity-1', { agricultureArea: 80 }),
+    ).rejects.toThrow(BadRequestException);
+    expect(repo.save).not.toHaveBeenCalled();
+  });
+
   it('should reject create when the customer does not exist', async () => {
     customerRepo.findOneBy.mockResolvedValue(null);
 
@@ -149,7 +163,6 @@ describe('EntitiesService', () => {
     await expect(service.create(dto)).resolves.toEqual(entity);
     expect(repo.create).toHaveBeenCalledWith({
       name: dto.name,
-      addressId,
       customer,
       address: addressDto,
       totalArea: dto.totalArea,
@@ -200,7 +213,7 @@ describe('EntitiesService', () => {
     await expect(service.create(dto)).resolves.toEqual(entity);
     expect(repo.create).toHaveBeenCalledWith({
       name: dto.name,
-      addressId: dto.addressId,
+      address: undefined,
       totalArea: dto.totalArea,
       agricultureArea: dto.agricultureArea,
       vegetationArea: dto.vegetationArea,

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AddressService } from './address.service';
@@ -33,7 +34,7 @@ export class AddressController {
   @Get(':id')
   @ApiOperation({ summary: 'Get address by id' })
   @ApiParam({ name: 'id', type: String })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.addressService.findOne(id);
   }
 
@@ -41,14 +42,17 @@ export class AddressController {
   @ApiOperation({ summary: 'Update an address' })
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: UpdateAddressDto })
-  update(@Param('id') id: string, @Body() updateAddressDto: UpdateAddressDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAddressDto: UpdateAddressDto,
+  ) {
     return this.addressService.update(id, updateAddressDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an address' })
   @ApiParam({ name: 'id', type: String })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.addressService.remove(id);
   }
 }

@@ -144,6 +144,20 @@ export class CropSeasonCropsService {
         'Crop is already registered in this crop season',
       );
     }
+
+    const deletedRelation = await this.cropSeasonCropsRepository.findOne({
+      where: {
+        cropSeason: { id: cropSeasonId },
+        crop: { id: cropId },
+      },
+      withDeleted: true,
+    });
+
+    if (deletedRelation) {
+      throw new ConflictException(
+        'Crop was previously registered and soft-deleted in this crop season',
+      );
+    }
   }
 
   private async validatePlantedArea(

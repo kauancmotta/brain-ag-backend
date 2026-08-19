@@ -146,4 +146,41 @@ describe('CropSeasonCropsService', () => {
       }),
     ).rejects.toThrow(NotFoundException);
   });
+
+  it('should list, find, update, and soft-delete planted crops', async () => {
+    const cropSeason = {
+      id: 'season-1',
+      entity: { id: 'entity-1', agricultureArea: 100 },
+    };
+    const plantedCrop = {
+      id: 'planting-1',
+      cropSeason,
+      crop: { id: 'crop-1', name: 'Corn' },
+      plantedArea: 20,
+    };
+    const queryBuilder = {
+      select: jest.fn().mockReturnThis(),
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      getRawOne: jest.fn().mockResolvedValue({ total: '0' }),
+    };
+    cropSeasonCropsRepository.find.mockResolvedValue([plantedCrop]);
+    cropSeasonCropsRepository.findOne.mockResolvedValue(plantedCrop);
+    cropSeasonCropsRepository.createQueryBuilder.mockReturnValue(queryBuilder);
+    cropSeasonCropsRepository.save.mockResolvedValue({
+      ...plantedCrop,
+      plantedArea: 30,
+    });
+
+    await expect(service.findAll()).resolves.toEqual([plantedCrop]);
+    await expect(service.findOne('planting-1')).resolves.toEqual(plantedCrop);
+    await expect(
+      service.update('planting-1', { plantedArea: 30 }),
+    ).resolves.toMatchObject({ plantedArea: 30 });
+    await expect(service.remove('planting-1')).resolves.toBeUndefined();
+    expect(cropSeasonCropsRepository.softRemove).toHaveBeenCalledWith(
+      plantedCrop,
+    );
+  });
 });
